@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
 
+# Nothing here writes to the repository, so the token only needs to read it.
+permissions:
+  contents: read
+
 jobs:
   test:
     # The keychain backend is macOS-only and needs cgo, so there is nothing to
