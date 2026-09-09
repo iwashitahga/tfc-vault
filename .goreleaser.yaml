@@ -1,0 +1,64 @@
+version: 2
+
+project_name: tfc-vault
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: tfc-vault
+    # The macOS keychain is reached through cgo. A CGO_ENABLED=0 build compiles
+    # but cannot store anything, so the build is pinned on.
+    env:
+      - CGO_ENABLED=1
+    goos:
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/iwashitahga/tfc-vault/internal/cli.Version={{ .Version }}
+
+universal_binaries:
+  - id: tfc-vault
+    replace: true
+
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+homebrew_casks:
+  - name: tfc-vault
+    binaries: [tfc-vault]
+    repository:
+      owner: iwashitahga
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    homepage: https://github.com/iwashitahga/tfc-vault
+    description: Keep Terraform API tokens in the macOS keychain instead of a plaintext file
+    license: MIT
+    hooks:
+      post:
+        # The release binaries are not notarised, so Gatekeeper would refuse to
+        # run them until the quarantine flag is cleared.
+        install: |
+          if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/tfc-vault"]
+          end
+    caveats: |
+      Wire tfc-vault into Terraform with:
+        tfc-vault install
