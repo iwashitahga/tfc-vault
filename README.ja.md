@@ -162,6 +162,20 @@ provider プラグイン、`local-exec` スクリプト、その他 Terraform �
 サブプロセスはすべて読めます。これは Terraform がトークンを受け取る方式そのものの
 性質で、`aws-vault exec` と同じトレードオフです。
 
+## コード署名
+
+リリースバイナリには ad-hoc 署名が付いているので `codesign -v` は通りますが、
+notarize はしていません。notarize には有料の Apple Developer Program が必要です。
+そのため Releases からダウンロードしたバイナリは、隔離属性を外すまで Gatekeeper に
+拒否されます。
+
+```sh
+xattr -dr com.apple.quarantine ./tfc-vault
+```
+
+Homebrew の cask はこれをインストール時に自動で行います。ソースからビルドした場合は
+隔離属性が付かないので影響ありません。
+
 ## 関連ツール
 
 Terraform のトークンをキーチェーンに保存する credentials helper は既にいくつかあり、

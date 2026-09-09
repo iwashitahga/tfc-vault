@@ -167,6 +167,20 @@ process environment, where every provider plugin, `local-exec` script and other
 subprocess Terraform starts can read it. That is inherent to how Terraform
 accepts tokens, and it matches the tradeoff `aws-vault exec` makes.
 
+## Code signing
+
+Release binaries carry an ad-hoc signature, so `codesign -v` accepts them, but
+they are not notarised. Notarisation needs a paid Apple Developer Program
+membership. Gatekeeper therefore refuses a binary downloaded from the releases
+page until its quarantine flag is cleared:
+
+```sh
+xattr -dr com.apple.quarantine ./tfc-vault
+```
+
+The Homebrew cask does this for you on install. Building from source produces an
+unquarantined binary and is unaffected.
+
 ## Related work
 
 Several credentials helpers already store Terraform tokens in the system

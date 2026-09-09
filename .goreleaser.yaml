@@ -25,6 +25,13 @@ builds:
 universal_binaries:
   - id: tfc-vault
     replace: true
+    hooks:
+      # The Go linker ad-hoc signs the arm64 slice but not the amd64 one, and
+      # lipo does not sign the result, so the universal binary is left half
+      # signed and `codesign -v` rejects it. Re-sign it ad-hoc. This does not
+      # satisfy Gatekeeper, which wants a notarised Developer ID signature.
+      post:
+        - cmd: codesign --sign - --force --timestamp=none "{{ .Path }}"
 
 archives:
   - formats: [tar.gz]
