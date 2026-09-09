@@ -13,6 +13,8 @@ tfc-vault keeps the token in a keychain of its own that relocks on sleep and
 after fifteen idle minutes. While it is locked nothing can read the token, and
 when Terraform needs it macOS asks for the keychain passphrase.
 
+![Storing a token, listing it, running one command with it, then locking the keychain](docs/demo.gif)
+
 macOS only. There is no other keychain backend.
 
 ## Install
