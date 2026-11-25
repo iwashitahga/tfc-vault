@@ -4,7 +4,7 @@ go 1.26.8
 
 require (
 	github.com/99designs/keyring v1.2.2
-	golang.org/x/net v0.62.0
+	golang.org/x/net v0.63.0
 	golang.org/x/term v0.48.0
 )
 
@@ -16,5 +16,5 @@ require (
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
 	golang.org/x/sys v0.50.0 // indirect
-	golang.org/x/text v0.43.0 // indirect
+	golang.org/x/text v0.44.0 // indirect
 )
